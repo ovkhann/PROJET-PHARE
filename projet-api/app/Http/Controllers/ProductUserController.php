@@ -26,15 +26,20 @@ class ProductUserController extends Controller
      */
     public function store(Request $request)
     {
+        // Vérifier que l'utilisateur est connecté
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Non authentifié'], 401);
+        }
+
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1|max:100'
+            'quantity'   => 'required|integer|min:1|max:100'
         ]);
 
         $product = Product::findOrFail($request->product_id);
 
         $productUser = ProductUser::firstOrNew([
-            'user_id' => Auth::id(),
+            'user_id'    => Auth::id(),
             'product_id' => $request->product_id
         ]);
 
@@ -48,7 +53,7 @@ class ProductUserController extends Controller
         $productUser->save();
 
         return response()->json([
-            'message' => 'Produit ajouté au panier',
+            'message'      => 'Produit ajouté au panier',
             'product_user' => $productUser
         ]);
     }

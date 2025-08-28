@@ -1,6 +1,6 @@
 // stores/cart.ts
 import { defineStore } from 'pinia'
-import Caller from '@/_services/CallerService'
+import CartService from '@/_services/CartService'
 
 interface Product {
   id: number
@@ -12,18 +12,17 @@ interface Product {
 interface CartItem {
   product_id: number
   quantity: number
-  product: Product   // <-- ajouter ici
+  product: Product
 }
 
 export const useCartStore = defineStore('product_users', {
   state: () => ({
-    items: [] as CartItem[], // Contenu du panier
+    items: [] as CartItem[],
   }),
   actions: {
-    // Récupérer le panier depuis l'API
     async fetchCart() {
       try {
-        const res = await Caller.get('/api/product_users')
+        const res = await CartService.fetchCart()
         this.items = res.data.map((item: any) => ({
           product_id: item.product_id,
           quantity: item.quantity,
@@ -33,46 +32,34 @@ export const useCartStore = defineStore('product_users', {
         console.error(error)
         this.items = []
       }
-    }
-    ,
-
-    // Ajouter un produit au panier
-    async addToCart(product_id: number, quantity = 1) {
-      try {
-        // Récupérer le cookie CSRF avant le POST
-        await Caller.get('/sanctum/csrf-cookie')
-
-        // Ajouter le produit
-        await Caller.post('/api/product_users', { product_id, quantity })
-
-        // Mettre à jour le panier local
-        await this.fetchCart()
-      } catch (error: any) {
-        console.error('Erreur addToCart:', error)
-        throw error // On renvoie l'erreur pour la gérer côté composant
-      }
     },
 
-    // Supprimer un produit du panier
-    async removeFromCart(product_id: number) {
+    async addToCart(product_id: number, quantity = 1) {
       try {
-        await Caller.get('/sanctum/csrf-cookie')
-        await Caller.delete(`/api/product_users/${product_id}`)
+        await CartService.addToCart({ product_id, quantity })
         await this.fetchCart()
       } catch (error: any) {
-        console.error('Erreur removeFromCart:', error)
+        console.error('Erreur addToCart:', error.response?.data || error)
         throw error
       }
     },
 
-    // Vider le panier
+    async removeFromCart(product_id: number) {
+      try {
+        await CartService.removeFromCart(product_id)
+        await this.fetchCart()
+      } catch (error: any) {
+        console.error('Erreur removeFromCart:', error.response?.data || error)
+        throw error
+      }
+    },
+
     async clearCart() {
       try {
-        await Caller.get('/sanctum/csrf-cookie')
-        await Caller.post('/api/product_users/clear')
+        await CartService.clearCart()
         this.items = []
       } catch (error: any) {
-        console.error('Erreur clearCart:', error)
+        console.error('Erreur clearCart:', error.response?.data || error)
         throw error
       }
     }

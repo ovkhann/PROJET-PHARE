@@ -60,6 +60,7 @@ async function addToCart(product: Product) {
   }
 }
 
+
 function handleImageError(event: Event) {
   const target = event.target as HTMLImageElement
   target.src = '/images/products/fallback.jpg'

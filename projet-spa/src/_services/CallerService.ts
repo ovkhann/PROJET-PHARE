@@ -1,15 +1,14 @@
 // _services/CallerService.ts
-import axios from 'axios'
+import axios from 'axios';
 
-const Caller = axios.create({
-  baseURL: 'http://localhost:8000', // ton API Laravel
-  withCredentials: true,            // nécessaire pour Sanctum
+const Axios = axios.create({
+  baseURL: 'http://localhost:8000',
   headers: {
-    Accept: 'application/json',
+    Accept: 'application/json'
   },
-  withXSRFToken: true,              // Axios gère le XSRF token
-  xsrfCookieName: 'XSRF-TOKEN',     // nom du cookie envoyé par Laravel
-  xsrfHeaderName: 'X-XSRF-TOKEN'    // nom du header envoyé par Axios
-})
-
-export default Caller
+  withCredentials: true, // axios va copier les cookies d'auth dans le header de la requête
+  withXSRFToken: true,
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN'
+});
+export default Axios;

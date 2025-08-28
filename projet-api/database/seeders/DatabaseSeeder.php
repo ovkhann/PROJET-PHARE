@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\Order;
 use App\Enums\RoleEnum;
+use App\Models\Cart;
 use App\Models\OrderProduct;
 use App\Models\ProductUser;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;

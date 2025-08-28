@@ -1,55 +1,44 @@
-// _services/AuthService.ts
-import Caller from "@/_services/CallerService";
+import Axios from './CallerService';
 import { useUserStore } from '@/stores/User';
-import { useCartStore } from '@/stores/cart';
 
-interface Credentials {
-  email: string;
-  password: string;
-}
+export async function login(credentials: { email: string, password: string }) {
+  // Récupérer le cookie CSRF
+  await Axios.get('/sanctum/csrf-cookie')
 
-export async function login(credentials: Credentials) {
-    const userStore = useUserStore();
-    const cartStore = useCartStore();
+  // Ensuite login
+  const res = await Axios.post('/authenticate', credentials)
 
-    try {
-        const res = await Caller.post('/authenticate', credentials);
-        // Stockage infos utilisateur
-        userStore.setUser({
-            email: res.data.user.email,
-            role: res.data.user.role
-        });
-        // Charger panier
-        await cartStore.fetchCart?.();
-    } catch (error: any) {
-        console.error('Erreur login:', error);
-        throw new Error(error.response?.data?.message || 'Impossible de se connecter');
-    }
+  const userStore = useUserStore()
+  userStore.setUser({
+    email: res.data.user.email,
+    role: res.data.user.role
+  })
 }
 
 export async function logout() {
-    const userStore = useUserStore();
-    const cartStore = useCartStore();
+    await Axios.post('/logout');
 
-    try {
-        await Caller.post('/logout');
-    } catch (error) {
-        console.error('Erreur logout:', error);
+      const userStore = useUserStore();
+      userStore.clearUser();
+
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf('=');
+        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
     }
-
-    await cartStore.clearCart?.();
-    userStore.clearUser();
 }
 
-export async function register(payload: any) {
-    try {
-        return await Caller.post('/api/register', payload);
-    } catch (error: any) {
-        console.error('Erreur inscription:', error);
-        throw new Error(error.response?.data?.message || 'Impossible de s\'inscrire');
-    }
+export async function register(payload:any) {
+    await Axios.get('/sanctum/csrf-cookie', {
+        baseURL: 'http://localhost:8000'
+    });
+    
+    return await Axios.post('/api/register', payload)
 }
 
 export function isLogged(): boolean {
-    return useUserStore().isLogged;
+    const userStore = useUserStore();
+    return userStore.isLogged;
 }

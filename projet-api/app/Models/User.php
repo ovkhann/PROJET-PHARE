@@ -62,10 +62,10 @@ class User extends Authenticatable
         return $this->role === RoleEnum::ROLE_ADMIN;
     }
 
-    // public function product_user()
-    // {
-    //     return $this->hasMany(ProductUser::class);
-    // }
+    public function cart()
+    {
+        return $this->hasMany(ProductUser::class);
+    }
 
     public function products()
     {
