@@ -30,13 +30,6 @@ Route::get('/cities', fn() => \App\Models\City::all());
 Route::get('/products', [ProductController::class, 'index']); // liste tous les produits
 Route::get('/products/{product}', [ProductController::class, 'show']); // détail d'un produit
 
-// Product-User (panier)
-Route::get('/product_users', [ProductUserController::class, 'index']);
-Route::post('/product_users', [ProductUserController::class, 'store']);
-Route::put('/product_users/{product}', [ProductUserController::class, 'update']);
-Route::delete('/product_users/{product}', [ProductUserController::class, 'destroy']);
-Route::delete('/product_users', [ProductUserController::class, 'clearCart']);
-
 
 // Catégories
 Route::get('/categories', [CategoryController::class, 'index']); // liste des catégories
@@ -53,6 +46,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/user', fn(Request $request) => $request->user());
     Route::put('/users/address', [UserController::class, 'updateAddress']);
+
+    // Product-User (panier)
+    Route::get('/product_users', [ProductUserController::class, 'index']);
+    Route::post('/product_users', [ProductUserController::class, 'store']);
+    Route::put('/product_users/{product}', [ProductUserController::class, 'update']);
+    Route::delete('/product_users/{product}', [ProductUserController::class, 'destroy']);
+    Route::delete('/product_users', [ProductUserController::class, 'clearCart']);
 
 
     // Catégories
@@ -88,3 +88,4 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::put('/users/{user}', [UserController::class, 'update']);
     Route::delete('/users/{user}', [UserController::class, 'destroy']);
 });
+

@@ -1,52 +1,16 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
-import { RouterLink, RouterView } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/User';
-import { useCartStore } from '@/stores/cart';
+import * as AuthService from '@/_services/AuthService';
 
+const router = useRouter();
 const User = useUserStore();
-const cartStore = useCartStore();
-const isCartOpen = ref(false);
 
-// Ouvrir/fermer le panier
-const toggleCart = () => {
-  isCartOpen.value = !isCartOpen.value;
-};
-
-// Nombre total d'articles
-const totalItems = computed(() =>
-  cartStore.items.reduce((acc, i) => acc + i.quantity, 0)
-);
-
-// Total du panier
-const totalPrice = computed(() =>
-  cartStore.items.reduce((acc, i) => acc + (i.product?.price || 0) * i.quantity, 0)
-);
-
-// Déconnexion
 async function logoutUser() {
-  await User.logout();
-  await cartStore.clearCart();
+  await AuthService.logout();
+  router.push('/login'); // redirection après déconnexion
 }
 
-// Charger le panier si utilisateur connecté
-onMounted(async () => {
-  if (User.isLogged) {
-    await cartStore.fetchCart();
-  }
-});
-
-// Rafraîchir le panier quand l'utilisateur se connecte/déconnecte
-watch(
-  () => User.isLogged,
-  async (logged) => {
-    if (logged) {
-      await cartStore.fetchCart();
-    } else {
-      cartStore.items = [];
-    }
-  }
-);
 </script>
 
 <template>
@@ -63,10 +27,6 @@ watch(
               <div class="account">
                 <button class="deconnexion-button" @click="logoutUser">DÉCONNEXION</button>
                 <span>{{ User.user?.email }}</span>
-              </div>
-              <div class="cart-icon" @click="toggleCart">
-                <img src="@/assets/images/cart-icon.svg" alt="Panier" />
-                <span v-if="totalItems > 0" class="cart-badge">{{ totalItems }}</span>
               </div>
             </div>
             <RouterLink class="connexion-header" to="/login" v-else>CONNEXION</RouterLink>
@@ -89,32 +49,6 @@ watch(
       <RouterView />
     </main>
 
-    <!-- PANNEAU PANIER -->
-    <div class="cart-panel" :class="{ 'open': isCartOpen }">
-      <div class="cart-header">
-        <h3>Votre panier</h3>
-        <button class="close-cart" @click="toggleCart">X</button>
-      </div>
-      <div class="cart-items">
-        <div v-if="cartStore.items.length === 0">Aucun article dans le panier</div>
-        <div v-else>
-          <div v-for="item in cartStore.items" :key="item.product_id" class="cart-item">
-            <div class="cart-item-info">
-              <img :src="item.product?.picture ?? '/images/products/fallback.jpg'" alt="Produit" class="cart-item-img"/>
-              <span>{{ item.product?.name }}</span>
-            </div>
-            <div class="cart-item-actions">
-              <span>{{ item.quantity }} x {{ item.product?.price.toFixed(2) }}€</span>
-              <button @click="cartStore.removeFromCart(item.product_id)">Supprimer</button>
-            </div>
-          </div>
-          <div class="cart-total">
-            <strong>Total :</strong> {{ totalPrice.toFixed(2) }}€
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- FOOTER -->
     <footer>
       <div class="container-footer">
@@ -134,7 +68,9 @@ watch(
         </div>
         <div class="container-subscribe">
           <h3 class="titre-subscribe">SUBSCRIBE</h3>
-          <span class="text-style">Keep up to date with the latest releases, <br>early access passwords & exclusive deals</span>
+          <span class="text-style">
+            Keep up to date with the latest releases, <br>early access passwords & exclusive deals
+          </span>
           <input type="text" class="input" placeholder="Email" />
           <button type="submit" class="button">SUBSCRIBE</button>
         </div>
@@ -146,6 +82,7 @@ watch(
     </footer>
   </div>
 </template>
+
 
 <!-- <style scoped>
 /* Ajoute ici ton CSS pour header, footer, panier, badges, etc. */

@@ -1,7 +1,6 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import router from '@/router';
-import { useCartStore } from './cart';
 import Caller from '@/_services/CallerService';
 
 interface ConnectedUser {
@@ -34,17 +33,14 @@ export const useUserStore = defineStore('user', () => {
   }
 
   async function logout() {
-    const cartStore = useCartStore();
-
     try {
-      await Caller.post('/logout'); // Appel logout sur le backend
+      await Caller.post('/logout');
     } catch (error) {
       console.error('Erreur logout backend :', error);
     }
 
-    await cartStore.clearCart(); // vider panier
     clearUser();
-    router.push('/login'); // redirection
+    router.push('/login');
   }
 
   return {

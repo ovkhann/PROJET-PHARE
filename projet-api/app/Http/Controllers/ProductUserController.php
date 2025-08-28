@@ -26,20 +26,15 @@ class ProductUserController extends Controller
      */
     public function store(Request $request)
     {
-        // Vérifier que l'utilisateur est connecté
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Non authentifié'], 401);
-        }
-
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity'   => 'required|integer|min:1|max:100'
+            'quantity' => 'required|integer|min:1|max:100'
         ]);
 
         $product = Product::findOrFail($request->product_id);
 
         $productUser = ProductUser::firstOrNew([
-            'user_id'    => Auth::id(),
+            'user_id' => Auth::id(),
             'product_id' => $request->product_id
         ]);
 
@@ -53,7 +48,7 @@ class ProductUserController extends Controller
         $productUser->save();
 
         return response()->json([
-            'message'      => 'Produit ajouté au panier',
+            'message' => 'Produit ajouté au panier',
             'product_user' => $productUser
         ]);
     }
@@ -63,17 +58,21 @@ class ProductUserController extends Controller
      */
     public function update(Request $request, $productId)
     {
-        $quantity = $request->get('quantity'); // récupère 'quantity'
+        // Récupérer la quantité, peu importe le type de body
+        $quantity = $request->input('quantity');
 
-        if (!$quantity || !is_numeric($quantity) || $quantity < 1 || $quantity > 100) {
+        // Vérification de la quantité
+        if (!isset($quantity) || !is_numeric($quantity) || $quantity < 1 || $quantity > 100) {
             return response()->json(['message' => 'Quantity requis et doit être entre 1 et 100'], 400);
         }
 
+        // Chercher le produit dans le panier de l'utilisateur
         $productUser = ProductUser::where('user_id', Auth::id())
             ->where('product_id', $productId)
             ->firstOrFail();
 
-        $productUser->quantity = $quantity;
+        // Mettre à jour la quantité
+        $productUser->quantity = (int) $quantity;
         $productUser->save();
 
         return response()->json([

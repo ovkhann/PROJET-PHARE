@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useCartStore } from '@/stores/cart'
-import { useUserStore } from '@/stores/User'
 import Caller from '@/_services/CallerService'
-
-const cartStore = useCartStore()
-const User = useUserStore()
 
 interface Product {
   id: number
@@ -16,7 +11,7 @@ interface Product {
 
 const products = ref<Product[]>([])
 
-// Charger les produits et le panier si connecté
+// Charger les 4 derniers produits
 onMounted(async () => {
   try {
     const res = await Caller.get('/api/products')
@@ -33,39 +28,15 @@ onMounted(async () => {
     products.value = fetchedProducts
       .sort((a, b) => b.id - a.id)
       .slice(0, 4)
-
-    if (User.isLogged) {
-      await cartStore.fetchCart()
-    }
   } catch (error) {
     console.error(error)
   }
 })
 
-
-
-// Ajouter un produit au panier
-async function addToCart(product: Product) {
-  if (!User.isLogged) {
-    alert('Veuillez vous connecter pour ajouter au panier !')
-    return
-  }
-
-  try {
-    await cartStore.addToCart(product.id, 1)
-    alert(`${product.name} ajouté au panier !`)
-  } catch (error: any) {
-    console.error(error)
-    alert(error.response?.data?.message || 'Impossible d’ajouter au panier')
-  }
-}
-
-
 function handleImageError(event: Event) {
   const target = event.target as HTMLImageElement
   target.src = '/images/products/fallback.jpg'
 }
-
 </script>
 
 <template>
@@ -88,12 +59,10 @@ function handleImageError(event: Event) {
           </div>
           <p class="product-name">{{ product.name }}</p>
           <p class="product-price">{{ product.price.toFixed(2) }}€</p>
-          <button class="add-to-cart-btn" @click="addToCart(product)">
-            Ajouter au panier
-          </button>
         </div>
       </div>
     </div>
+
 
     <!-- 3. WHO WE ARE -->
     <div class="who-we-are-section">
