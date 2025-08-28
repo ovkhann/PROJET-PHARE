@@ -68,7 +68,11 @@ async function logoutUser() {
         <h3 id="h3-cart">Mon Panier</h3>
         <button class="cart-close-btn" @click="toggleCart">✕</button>
       </div>
+
+      <!-- Panier vide -->
       <div id="panier-vide" v-if="cartStore.items.length === 0">Votre panier est vide.</div>
+
+      <!-- Liste des produits -->
       <div v-else class="cart-items">
         <div v-for="item in cartStore.items" :key="item.productId" class="cart-item">
           <div class="container-image-produit-panier">
@@ -76,14 +80,29 @@ async function logoutUser() {
           </div>
           <div class="cart-item-info">
             <p>{{ item.name }}</p>
-            <p>{{ item.price.toFixed(2) }}€ x {{ item.quantity }}</p>
+            <p>
+              {{ item.price.toFixed(2) }}€ x
+              <input type="number" min="1" v-model.number="item.quantity"
+                @change="cartStore.updateQuantity(item.productId, item.quantity)" />
+              <button class="btn-supprimer" @click="cartStore.removeItem(item.productId)">Supprimer</button>
+            </p>
           </div>
         </div>
       </div>
+
+      <!-- Total -->
       <div class="cart-total">
-        <strong>Total : {{ cartStore.totalPrice.toFixed(2) }}€</strong>
+        <span>Total : {{ cartStore.totalPrice.toFixed(2) }}€</span>
+
+        <!-- Vider le panier -->
+        <div v-if="cartStore.items.length > 0" class="cart-actions">
+          <button class="btn-clear-cart" @click="cartStore.clearCart()">Vider le panier</button>
+        </div>
       </div>
+
+
     </div>
+
 
     <!-- FOOTER -->
     <footer>
@@ -157,6 +176,10 @@ footer {
 
 .cart-item-info p {
   margin: 0vw;
+  display: flex;
+  gap: 1vw;
+  font-family: sans-serif;
+  align-items: center;
 }
 
 .container-titre-croix {
@@ -168,9 +191,17 @@ footer {
 .cart-total {
   margin: 1vw;
   font-size: var(--font-size-texte);
-  font-family: 'nexa-bold';
+  font-family: sans-serif;
   color: var(--color-beige);
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
 }
+
+.cart-total span {
+  font-weight: bold;
+}
+
 
 .container-image-produit-panier img {
   width: 6vw;
@@ -448,27 +479,7 @@ nav a:first-of-type {
   background-color: #D9CCC1;
 }
 
-/* @media (max-width: 764px) {
-  header {
-    display: flex;
-    place-items: center;
-  }
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  nav {
-    text-align: center;
-    font-size: 1rem;
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-} */
 
 
 
@@ -570,4 +581,97 @@ nav a:first-of-type {
   cursor: pointer;
   line-height: 1;
 }
+
+
+
+
+/**************** CSS MODIFIER / SUPPRIMER / VIDER LE PANIER ******************/
+
+/* Input quantité */
+.cart-item-info input[type="number"] {
+  width: 50px;
+  display: flex;
+  padding: 0px 3px;
+  font-family: sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 15px;
+}
+
+/* Bouton supprimer un produit */
+.btn-supprimer {
+  display: flex;
+  padding: 4px 8px;
+  background-color: #ff4d4d;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-supprimer:hover {
+  background-color: #e60000;
+}
+
+/* Bouton vider le panier */
+.btn-clear-cart {
+  display: flex;
+  padding: 10px 15px;
+  font-family: sans-serif;
+  width: fit-content;
+  background-color: var(--color-beige);
+  color: var(--color-brown);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.btn-clear-cart:hover {
+  background-color: #ff4d4d;
+  color: white;
+}
+
+/* Ajustement de la section info pour que tout soit aligné */
+.cart-item-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* @media (max-width: 764px) {
+  header {
+    display: flex;
+    place-items: center;
+  }
+
+  header .wrapper {
+    display: flex;
+    place-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  nav {
+    text-align: center;
+    font-size: 1rem;
+    padding: 1rem 0;
+    margin-top: 1rem;
+  }
+} */
 </style>
