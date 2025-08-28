@@ -8,7 +8,6 @@ import Home from "@/views/Home.vue";
 import Login from "@/views/Login.vue";
 import Register from "@/views/Register.vue";
 import Shop from "@/views/Shop.vue";
-import Dashboard from "@/views/Dashboard.vue";
 import AddProduct from "@/views/AddProduct.vue";
 
 const router = createRouter({
@@ -23,13 +22,17 @@ const router = createRouter({
         { path: 'contact', name: 'contact', component: Contact },
         { path: 'login', name: 'login', component: Login },
         { path: 'register', name: 'register', component: Register },
-        { path: 'dashboard', name: 'dashboard', component: Dashboard },
         { path: 'add-product', name: 'addProduct', component: AddProduct }
       ]
     },
     {
       path: '/:pathMatch(.*)*',
       redirect: '/'
+    },
+    {
+      path: '/admin',
+      component: () => import('@/layouts/AdminLayout.vue'),
+      meta: { requiresAdmin: true }
     }
   ]
 });
