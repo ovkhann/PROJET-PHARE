@@ -2,6 +2,15 @@
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/User';
 import * as AuthService from '@/_services/AuthService';
+import { ref } from 'vue'
+import { useCartStore } from '@/stores/cart'
+
+const cartStore = useCartStore()
+const isCartOpen = ref(false)
+
+function toggleCart() {
+  isCartOpen.value = !isCartOpen.value
+}
 
 const router = useRouter();
 const User = useUserStore();
@@ -28,6 +37,10 @@ async function logoutUser() {
                 <button class="deconnexion-button" @click="logoutUser">DÉCONNEXION</button>
                 <span>{{ User.user?.email }}</span>
               </div>
+              <div class="cart-icon" @click="toggleCart">
+                <img src="@/assets/images/cart-icon.svg" alt="Panier" />
+                <span v-if="cartStore.totalItems > 0" class="cart-badge">{{ cartStore.totalItems }}</span>
+              </div>
             </div>
             <RouterLink class="connexion-header" to="/login" v-else>CONNEXION</RouterLink>
           </nav>
@@ -48,6 +61,29 @@ async function logoutUser() {
     <main class="main-content">
       <RouterView />
     </main>
+
+    <!-- PANIER SLIDE-IN -->
+    <div class="cart-panel" :class="{ open: isCartOpen }">
+      <div class="container-titre-croix">
+        <h3 id="h3-cart">Mon Panier</h3>
+        <button class="cart-close-btn" @click="toggleCart">✕</button>
+      </div>
+      <div id="panier-vide" v-if="cartStore.items.length === 0">Votre panier est vide.</div>
+      <div v-else class="cart-items">
+        <div v-for="item in cartStore.items" :key="item.productId" class="cart-item">
+          <div class="container-image-produit-panier">
+            <img :src="item.picture ?? '/images/products/fallback.jpg'" :alt="item.name" />
+          </div>
+          <div class="cart-item-info">
+            <p>{{ item.name }}</p>
+            <p>{{ item.price.toFixed(2) }}€ x {{ item.quantity }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="cart-total">
+        <strong>Total : {{ cartStore.totalPrice.toFixed(2) }}€</strong>
+      </div>
+    </div>
 
     <!-- FOOTER -->
     <footer>
@@ -83,67 +119,6 @@ async function logoutUser() {
   </div>
 </template>
 
-
-<!-- <style scoped>
-/* Ajoute ici ton CSS pour header, footer, panier, badges, etc. */
-.cart-panel {
-  position: fixed;
-  right: -400px;
-  top: 0;
-  width: 400px;
-  height: 100%;
-  background: white;
-  box-shadow: -2px 0 10px rgba(0,0,0,0.3);
-  transition: right 0.3s;
-  z-index: 1000;
-  padding: 1rem;
-  overflow-y: auto;
-}
-.cart-panel.open {
-  right: 0;
-}
-.cart-badge {
-  background: red;
-  color: white;
-  border-radius: 50%;
-  padding: 0 6px;
-  font-size: 0.8rem;
-  position: absolute;
-  top: -5px;
-  right: -5px;
-}
-.cart-item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-}
-.cart-item-info {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-.cart-item-img {
-  width: 50px;
-  height: 50px;
-  object-fit: cover;
-}
-.cart-item-actions button {
-  background: #e74c3c;
-  color: white;
-  border: none;
-  padding: 2px 6px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.cart-total {
-  margin-top: 1rem;
-  font-weight: bold;
-  text-align: right;
-}
-</style> -->
-
-
-
 <style scoped>
 footer {
   display: flex;
@@ -155,6 +130,59 @@ footer {
   padding: 1vw;
   background: var(--color-beige);
   align-items: center;
+}
+
+.container-image-produit-panier {
+  width: fit-content;
+  height: auto;
+  position: relative;
+  display: flex;
+}
+
+#panier-vide {
+  margin: 1vw;
+  font-family: nexa-light;
+  color: var(--color-beige);
+}
+
+.cart-item-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 60%;
+  gap: 1vw;
+  height: auto;
+  position: relative;
+}
+
+.cart-item-info p {
+  margin: 0vw;
+}
+
+.container-titre-croix {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-total {
+  margin: 1vw;
+  font-size: var(--font-size-texte);
+  font-family: 'nexa-bold';
+  color: var(--color-beige);
+}
+
+.container-image-produit-panier img {
+  width: 6vw;
+  height: 6vw;
+  position: relative;
+  object-fit: cover;
+}
+
+#h3-cart {
+  margin: 1vw;
+  font-family: 'nexa-book';
+  font-size: 2vw;
 }
 
 .container-footer {
@@ -468,7 +496,7 @@ nav a:first-of-type {
   background: red;
   color: white;
   font-family: system-ui;
-  font-size: 0.5rem;
+  font-size: 0.6rem;
   font-weight: bold;
   border-radius: 60%;
   padding: 0px 4px;
@@ -478,14 +506,20 @@ nav a:first-of-type {
   justify-content: center;
 }
 
+
+
+
+
+
+
 /* Panneau panier */
 .cart-panel {
   position: fixed;
   top: 0;
-  right: -400px;
-  width: 400px;
+  right: -30vw;
+  width: 30vw;
   height: 100%;
-  background-color: #fff;
+  background-color: var(--color-brown);
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
   transition: right 0.3s ease;
   z-index: 1000;
@@ -514,12 +548,26 @@ nav a:first-of-type {
 
 .cart-items {
   padding: 1rem;
-  flex: 1;
   overflow-y: auto;
 }
 
 .cart-item {
-  padding: 0.5rem 0;
+  padding: 1.5rem 0;
+  display: flex;
+  gap: 3vw;
   border-bottom: 1px solid #eee;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.cart-close-btn {
+  position: relative;
+  right: 15px;
+  color: var(--color-beige);
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+  line-height: 1;
 }
 </style>

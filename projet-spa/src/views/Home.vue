@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import Caller from '@/_services/CallerService'
+import { useUserStore } from '@/stores/User'
+import { useCartStore } from '@/stores/cart'
+
+const User = useUserStore()
+const cartStore = useCartStore()
 
 interface Product {
   id: number
@@ -33,11 +38,18 @@ onMounted(async () => {
   }
 })
 
+function addProductToCart(product: Product) {
+  if (!User.isLogged) return
+  cartStore.addToCart(product)
+  alert(`${product.name} ajouté au panier !`) // simple notification
+}
+
 function handleImageError(event: Event) {
   const target = event.target as HTMLImageElement
   target.src = '/images/products/fallback.jpg'
 }
 </script>
+
 
 <template>
   <section class="home-page">
@@ -59,6 +71,9 @@ function handleImageError(event: Event) {
           </div>
           <p class="product-name">{{ product.name }}</p>
           <p class="product-price">{{ product.price.toFixed(2) }}€</p>
+          <button v-if="User.isLogged" class="add-to-cart-btn" @click="addProductToCart(product)">
+            Ajouter au panier
+          </button>
         </div>
       </div>
     </div>
