@@ -98,39 +98,6 @@ function handleImageError(event: Event) {
   </section>
 </template>
 
-<!-- <style scoped>
-.products-container {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.product-card {
-  width: calc(25% - 15px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.product-image {
-  width: 100%;
-  object-fit: cover;
-}
-.add-to-cart-btn {
-  margin-top: 10px;
-  padding: 8px 12px;
-  background-color: #a0522d;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-.add-to-cart-btn:hover {
-  background-color: #8b4513;
-}
-.centered {
-  justify-content: center;
-}
-</style> -->
-
-
 
 <style scoped>
 .add-to-cart-btn {
