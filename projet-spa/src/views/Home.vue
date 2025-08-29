@@ -10,7 +10,7 @@ const cartStore = useCartStore()
 interface Product {
   id: number
   name: string
-  picture: string | null
+  picture: string[] // tableau d'images
   price: number
 }
 
@@ -21,15 +21,13 @@ onMounted(async () => {
   try {
     const res = await Caller.get('/api/products')
 
-    // Assurer le type
     const fetchedProducts: Product[] = res.data.map((p: any) => ({
       id: Number(p.id),
       name: String(p.name),
-      picture: p.picture ?? null,
+      picture: Array.isArray(p.picture) ? p.picture : (p.picture ? [p.picture] : []),
       price: Number(p.price)
     }))
 
-    // Trier et prendre les 4 derniers
     products.value = fetchedProducts
       .sort((a, b) => b.id - a.id)
       .slice(0, 4)
@@ -40,8 +38,13 @@ onMounted(async () => {
 
 function addProductToCart(product: Product) {
   if (!User.isLogged) return
-  cartStore.addToCart(product)
-  alert(`${product.name} ajouté au panier !`) // simple notification
+  cartStore.addToCart({
+    id: product.id,                  // ← ici on met "id"
+    name: product.name,
+    price: product.price,
+    picture: product.picture[0] ?? null
+  })
+  alert(`${product.name} ajouté au panier !`)
 }
 
 function handleImageError(event: Event) {
@@ -49,7 +52,6 @@ function handleImageError(event: Event) {
   target.src = '/images/products/fallback.jpg'
 }
 </script>
-
 
 <template>
   <section class="home-page">
@@ -65,19 +67,23 @@ function handleImageError(event: Event) {
       <div class="products-container" :class="{ 'centered': products.length < 4 }">
         <div v-if="products.length === 0">Aucun produit disponible</div>
         <div v-else v-for="product in products" :key="product.id" class="product-card">
-          <div class="container-product-image">
-            <img :src="product.picture ?? '/images/products/fallback.jpg'" :alt="product.name" class="product-image"
-              @error="handleImageError" />
-          </div>
-          <p class="product-name">{{ product.name }}</p>
-          <p class="product-price">{{ product.price.toFixed(2) }}€</p>
+          <!-- Produit cliquable pour aller sur la page détail -->
+          <router-link :to="{ name: 'product-detail', params: { id: product.id } }" class="product-link">
+            <div class="container-product-image">
+              <img :src="product.picture[0] ?? '/images/products/fallback.jpg'" :alt="product.name"
+                class="product-image" @error="handleImageError" />
+            </div>
+            <p class="product-name">{{ product.name }}</p>
+            <p class="product-price">{{ product.price.toFixed(2) }}€</p>
+          </router-link>
+
+          <!-- Bouton Ajouter au panier pour utilisateur connecté -->
           <button v-if="User.isLogged" class="add-to-cart-btn" @click="addProductToCart(product)">
             Ajouter au panier
           </button>
         </div>
       </div>
     </div>
-
 
     <!-- 3. WHO WE ARE -->
     <div class="who-we-are-section">
@@ -99,6 +105,7 @@ function handleImageError(event: Event) {
 </template>
 
 
+
 <style scoped>
 .add-to-cart-btn {
   margin-top: 8px;
@@ -118,10 +125,6 @@ function handleImageError(event: Event) {
   width: 100%;
   height: 80vh;
   object-fit: cover;
-}
-
-.cover-image-section {
-  margin-top: 8vw;
 }
 
 .section-title {

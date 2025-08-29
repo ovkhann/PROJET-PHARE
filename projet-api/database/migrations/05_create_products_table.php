@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->string('name');
             $table->decimal('price', 10, 2);
             $table->integer('stock')->default(0);
-            $table->string('picture')->nullable();
+            $table->json('picture')->nullable();
             $table->text('description');
             $table->boolean('archived')->default(false);
             $table->foreignId('category_id')->constrained()->onDelete('cascade');

@@ -51,7 +51,10 @@ class DatabaseSeeder extends Seeder
             'description' => 'LOREM ...',
             'archived' => 0,
             'category_id' => 2,
-            'picture' => '/images/products/veste-papillon.jpg',
+            'picture' => [
+                '/images/products/veste-papillon.jpg',
+                '/images/products/jogging-papillon.jpg'
+            ],
         ]);
 
         $product2 = Product::create([
@@ -61,8 +64,13 @@ class DatabaseSeeder extends Seeder
             'description' => 'LOREM LOREMLOREMKLOREMLREORLERLEMRER,LE  KNRK ENRJENJ RBNEJRNENRKJEN RNEKR N',
             'archived' => 0,
             'category_id' => 3,
-            'picture' => '/images/products/jogging-papillon.jpg',
+            'picture' => [
+                '/images/products/jogging-papillon.jpg',
+                '/images/products/veste-papillon.jpg',
+            ],
         ]);
+
+
 
         $options = Option::all();
 

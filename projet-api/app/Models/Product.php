@@ -19,6 +19,11 @@ class Product extends Model
         'category_id',
     ];
 
+    // Cast JSON pour que picture devienne un tableau
+    protected $casts = [
+        'picture' => 'array',
+    ];
+
     /** Relation avec la catégorie */
     public function category()
     {
@@ -31,9 +36,11 @@ class Product extends Model
         return $this->belongsToMany(Option::class);
     }
 
-    /** Accesseur pour obtenir l'URL complète de l'image */
+    /** Accesseur pour obtenir les URL complètes des images */
     public function getPictureUrlAttribute()
     {
-        return $this->picture ? asset('storage/' . $this->picture) : null;
+        if (!$this->picture) return [];
+
+        return array_map(fn($img) => asset('storage/' . $img), $this->picture);
     }
 }

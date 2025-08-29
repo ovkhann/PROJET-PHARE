@@ -22,13 +22,17 @@ class ProductController extends Controller
 
         // Ne renvoie que les champs publics
         $publicProducts = $products->map(function ($product) {
+            // Si picture est null, on met un tableau vide
+            $pictures = is_array($product->picture) ? $product->picture : ($product->picture ? [$product->picture] : []);
+
+            // On transforme chaque chemin en URL complète
+            $pictures = array_map(fn($img) => asset(str_replace('public/', 'storage/', $img)), $pictures);
+
             return [
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->price,
-                'picture' => $product->picture
-                    ? asset(str_replace('public/', 'storage/', $product->picture))
-                    : null,
+                'picture' => $pictures, // tableau d'URLs
                 'description' => $product->description,
                 'category' => $product->category,
                 'options' => $product->options,
@@ -45,11 +49,15 @@ class ProductController extends Controller
             return response()->json(['message' => 'Produit non trouvé'], 404);
         }
 
+        // Gestion du tableau d'images
+        $pictures = is_array($product->picture) ? $product->picture : ($product->picture ? [$product->picture] : []);
+        $pictures = array_map(fn($img) => asset(str_replace('public/', 'storage/', $img)), $pictures);
+
         $publicProduct = [
             'id' => $product->id,
             'name' => $product->name,
             'price' => $product->price,
-            'picture' => $product->picture ? asset('storage/' . $product->picture) : null,
+            'picture' => $pictures, // tableau d'URLs
             'description' => $product->description,
             'category' => $product->category,
             'options' => $product->options,
@@ -74,7 +82,11 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('picture')) {
-            $data['picture'] = $request->file('picture')->store('products', 'public');
+            $pictures = [];
+            foreach ($request->file('picture') as $file) {
+                $pictures[] = $file->store('products', 'public');
+            }
+            $data['picture'] = $pictures;
         }
 
         $product = Product::create($data);
@@ -104,7 +116,11 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('picture')) {
-            $data['picture'] = $request->file('picture')->store('products', 'public');
+            $pictures = [];
+            foreach ($request->file('picture') as $file) {
+                $pictures[] = $file->store('products', 'public');
+            }
+            $data['picture'] = $pictures;
         }
 
         $product->update($data);

@@ -22,7 +22,8 @@ const router = createRouter({
         { path: 'contact', name: 'contact', component: Contact },
         { path: 'login', name: 'login', component: Login },
         { path: 'register', name: 'register', component: Register },
-        { path: 'add-product', name: 'addProduct', component: AddProduct }
+        { path: 'add-product', name: 'addProduct', component: AddProduct },
+        { path: 'products/:id', name: 'product-detail', component: () => import('@/views/ProductDetail.vue'), props: true } // <-- ici
       ]
     },
     {
@@ -36,5 +37,6 @@ const router = createRouter({
     }
   ]
 });
+
 
 export default router;

@@ -242,6 +242,7 @@ footer {
 .main-content {
   flex: 1;
   display: flex;
+  margin-top: 10.7vw;
   flex-direction: column;
   align-items: center;
   justify-content: center;
