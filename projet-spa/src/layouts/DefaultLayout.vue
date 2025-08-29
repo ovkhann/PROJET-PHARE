@@ -206,7 +206,9 @@ footer {
 .container-image-produit-panier img {
   width: 6vw;
   height: 6vw;
+  border: solid 3px var(--color-creme);
   position: relative;
+  border-radius: 0.7vw;
   object-fit: cover;
 }
 

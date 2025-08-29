@@ -141,7 +141,8 @@ onMounted(fetchProducts);
         <input v-model="form.name" placeholder="Nom du produit" required />
         <textarea v-model="form.description" placeholder="Description"></textarea>
         <input v-model.number="form.price" type="number" step="0.01" placeholder="Prix" required />
-        <input type="file" multiple @change="e => form.pictures = Array.from((e.target as HTMLInputElement).files || [])" />
+        <input type="file" multiple
+          @change="e => form.pictures = Array.from((e.target as HTMLInputElement).files || [])" />
 
         <div class="form-buttons">
           <button type="submit">{{ editingProduct ? 'Mettre à jour' : 'Créer' }}</button>
@@ -192,7 +193,7 @@ onMounted(fetchProducts);
 
 .products-table th,
 .products-table td {
-  padding: 12px 10px;
+  padding: 5px 5px;
   text-align: left;
   border-bottom: 1px solid #ccc;
 }
@@ -200,6 +201,21 @@ onMounted(fetchProducts);
 .products-table th {
   background: #f0f0f0;
   font-weight: 600;
+}
+
+.images-cell {
+  width: 20%;
+  height: auto;
+  gap: 1vw;
+  position: relative;
+  display: flex;
+}
+
+.images-cell img {
+  width: 100%;
+  height: auto;
+  position: relative;
+  object-fit: cover;
 }
 
 .img-wrapper {

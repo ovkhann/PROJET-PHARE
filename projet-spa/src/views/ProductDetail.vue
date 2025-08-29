@@ -68,9 +68,9 @@ function handleImageError(event: Event) {
         <div class="product-detail-container">
             <!-- Galerie images à gauche -->
             <div class="gallery-left">
-                <img v-if="selectedImage" :src="selectedImage" :alt="product.name" class="main-image"
-                    @error="handleImageError" />
-
+                <div class="main-image">
+                    <img v-if="selectedImage" :src="selectedImage" :alt="product.name" @error="handleImageError" />
+                </div>
                 <div class="thumbnails">
                     <img v-for="(img, index) in product.picture" :key="index" :src="img" :alt="product.name"
                         class="thumbnail" @click="selectImage(img)" @error="handleImageError" />
@@ -79,9 +79,8 @@ function handleImageError(event: Event) {
 
             <!-- Infos produit à droite -->
             <div class="info-right">
-                <h1>{{ product.name }}</h1>
+                <h1 class="style-h1-product">{{ product.name }}</h1>
                 <p class="price">{{ product.price.toFixed(2) }}€</p>
-                <p class="description">{{ product.description }}</p>
 
                 <div v-if="product.options.length">
                     <h3>Options :</h3>
@@ -93,6 +92,8 @@ function handleImageError(event: Event) {
                 <button v-if="User.isLogged" @click="addProductToCart" class="add-to-cart-btn">
                     Ajouter au panier
                 </button>
+
+                <p class="description">{{ product.description }}</p>
             </div>
         </div>
     </section>
@@ -105,25 +106,45 @@ function handleImageError(event: Event) {
 <style scoped>
 .product-detail-container {
     display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
+    height: auto;
+    padding: 2rem 2rem;
+    position: relative;
 }
 
 .gallery-left {
-    flex: 1;
-    max-width: 500px;
+    width: 100%;
+    height: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .main-image {
-    width: 100%;
+    width: 70%;
     height: auto;
+    display: flex;
     object-fit: contain;
-    border: 1px solid #ddd;
     margin-bottom: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-image img {
+    width: 30vw;
+    height: 30vw;
+    border: 3px solid var(--color-beige);
+    object-fit: cover;
+    position: relative;
+    border-radius: 2vw;
+}
+
+.style-h1-product {
+    color: var(--color-brown);
+    font-family: nexa-book;
+    margin: 0vw;
 }
 
 .thumbnails {
@@ -141,8 +162,29 @@ function handleImageError(event: Event) {
 }
 
 .info-right {
-    flex: 1;
-    min-width: 300px;
+    width: 100%;
+    height: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.info-right p {
+    font-weight: bold;
+    margin: 0.5rem 0;
+    color: var(--color-brown);
+    font-family: 'nexa-book';
+    font-size: 1.2vw;
+}
+
+.product-detail-page {
+    width: 100%;
+    height: auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
 
 .price {
@@ -151,11 +193,19 @@ function handleImageError(event: Event) {
 }
 
 .add-to-cart-btn {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    background-color: #222;
-    color: white;
+    padding: 0.5rem 2rem;
+    background-color: var(--color-beige);
+    color: var(--color-brown);
     border: none;
+    font-weight: bold;
+    width: fit-content;
+    border-radius: 5px;
     cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.add-to-cart-btn:hover {
+    background-color: var(--color-brown);
+    color: var(--color-beige);
 }
 </style>

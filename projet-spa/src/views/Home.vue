@@ -108,17 +108,25 @@ function handleImageError(event: Event) {
 
 <style scoped>
 .add-to-cart-btn {
-  margin-top: 8px;
-  padding: 6px 12px;
-  background-color: #1a73e8;
-  color: white;
+  padding: 0.5rem 2rem;
+  background-color: var(--color-beige);
+  color: var(--color-brown);
   border: none;
-  border-radius: 4px;
+  font-weight: bold;
+  width: fit-content;
+  border-radius: 5px;
   cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
 
 .add-to-cart-btn:hover {
-  background-color: #155ab6;
+  background-color: var(--color-brown);
+  color: var(--color-beige);
+}
+
+.product-link {
+    padding: 0vw;
+    color: var(--color-brown);
 }
 
 .cover-image {
@@ -149,6 +157,7 @@ function handleImageError(event: Event) {
 .product-card {
   width: 20vw;
   text-align: center;
+  transition: all 0.3s ease-in-out;
 }
 
 .container-product-image {
@@ -158,10 +167,15 @@ function handleImageError(event: Event) {
   display: inline-flex;
 }
 
+.product-card:hover {
+transform: scale(0.9);}
+
 .product-image {
   width: 100%;
   height: 22vw;
+  border: 3px solid var(--color-beige);
   object-fit: cover;
+  border-radius: 2vw;
   position: relative;
 }
 
@@ -204,7 +218,7 @@ function handleImageError(event: Event) {
 }
 
 .who-text {
-  max-width: 40%;
+  max-width: 31%;
 }
 
 .who-text h2 {
