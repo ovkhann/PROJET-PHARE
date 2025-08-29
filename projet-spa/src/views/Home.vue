@@ -7,14 +7,24 @@ import { useCartStore } from '@/stores/cart'
 const User = useUserStore()
 const cartStore = useCartStore()
 
+// Interfaces
+interface Option {
+  id: number
+  size: string
+}
+
 interface Product {
   id: number
   name: string
   picture: string[] // tableau d'images
   price: number
+  options: Option[]
 }
 
 const products = ref<Product[]>([])
+
+// Sélections d’options par produit : { [product.id]: optionId|null }
+const selectedOptions = ref<Record<number, number | null>>({})
 
 // Charger les 4 derniers produits
 onMounted(async () => {
@@ -25,12 +35,18 @@ onMounted(async () => {
       id: Number(p.id),
       name: String(p.name),
       picture: Array.isArray(p.picture) ? p.picture : (p.picture ? [p.picture] : []),
-      price: Number(p.price)
+      price: Number(p.price),
+      options: p.options ?? []
     }))
 
     products.value = fetchedProducts
       .sort((a, b) => b.id - a.id)
       .slice(0, 4)
+
+    // Initialiser selectedOptions à null pour chaque produit
+    products.value.forEach(p => {
+      selectedOptions.value[p.id] = null
+    })
   } catch (error) {
     console.error(error)
   }
@@ -38,13 +54,22 @@ onMounted(async () => {
 
 function addProductToCart(product: Product) {
   if (!User.isLogged) return
+
+  const selectedOptionId = selectedOptions.value[product.id]
+  if (!selectedOptionId) {
+    alert("Veuillez choisir une taille avant d’ajouter au panier !")
+    return
+  }
+
   cartStore.addToCart({
-    id: product.id,                  // ← ici on met "id"
+    id: product.id,
     name: product.name,
     price: product.price,
-    picture: product.picture[0] ?? null
+    picture: product.picture[0] ?? null,
+    optionId: selectedOptionId
   })
-  alert(`${product.name} ajouté au panier !`)
+
+  alert(`${product.name} ajouté au panier avec la taille choisie !`)
 }
 
 function handleImageError(event: Event) {
@@ -67,17 +92,29 @@ function handleImageError(event: Event) {
       <div class="products-container" :class="{ 'centered': products.length < 4 }">
         <div v-if="products.length === 0">Aucun produit disponible</div>
         <div v-else v-for="product in products" :key="product.id" class="product-card">
-          <!-- Produit cliquable pour aller sur la page détail -->
+          <!-- Produit cliquable -->
           <router-link :to="{ name: 'product-detail', params: { id: product.id } }" class="product-link">
             <div class="container-product-image">
-              <img :src="product.picture[0] ?? '/images/products/fallback.jpg'" :alt="product.name"
-                class="product-image" @error="handleImageError" />
+              <img :src="product.picture[0] ?? '/images/products/fallback.jpg'"
+                   :alt="product.name"
+                   class="product-image"
+                   @error="handleImageError" />
             </div>
             <p class="product-name">{{ product.name }}</p>
             <p class="product-price">{{ product.price.toFixed(2) }}€</p>
           </router-link>
 
-          <!-- Bouton Ajouter au panier pour utilisateur connecté -->
+          <!-- Sélecteur de taille -->
+          <select v-if="product.options.length"
+                  v-model="selectedOptions[product.id]"
+                  class="option-select">
+            <option :value="null" disabled>Choisir une taille</option>
+            <option v-for="opt in product.options" :key="opt.id" :value="opt.id">
+              {{ opt.size }}
+            </option>
+          </select>
+
+          <!-- Bouton Ajouter au panier -->
           <button v-if="User.isLogged" class="add-to-cart-btn" @click="addProductToCart(product)">
             Ajouter au panier
           </button>
@@ -94,9 +131,10 @@ function handleImageError(event: Event) {
         <div class="who-text">
           <h2>WHO WE ARE ?</h2>
           <p>
-            We are a passionate team driven by a love for fashion and a commitment to authenticity. Our goal is to offer
-            unique, responsible pieces that reflect individual style and timeless elegance. Every collection we create
-            is infused with purpose, creativity, and a desire to inspire confidence in those who wear it.
+            We are a passionate team driven by a love for fashion and a commitment to authenticity.
+            Our goal is to offer unique, responsible pieces that reflect individual style and timeless elegance.
+            Every collection we create is infused with purpose, creativity, and a desire to inspire confidence
+            in those who wear it.
           </p>
         </div>
       </div>

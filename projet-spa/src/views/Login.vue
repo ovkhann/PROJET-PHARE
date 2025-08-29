@@ -128,7 +128,6 @@ h2 {
   width: 100%;
   height: auto;
   flex: 1;
-  margin-top: 10vw;
   padding: 7vw;
   position: relative;
   justify-content: center;

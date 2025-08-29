@@ -75,7 +75,6 @@ async function handleRegister() {
     flex-direction: column;
     width: 100%;
     padding: 7vw;
-    margin-top: 10vw;
     justify-content: center;
     align-items: center;
 }

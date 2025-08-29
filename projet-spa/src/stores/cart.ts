@@ -6,6 +6,8 @@ interface CartItem {
     price: number
     picture?: string | null
     quantity: number
+    optionId?: number | null
+    size?: string | null
 }
 
 export const useCartStore = defineStore('cart', {
@@ -13,8 +15,19 @@ export const useCartStore = defineStore('cart', {
         items: [] as CartItem[]
     }),
     actions: {
-        addToCart(product: { id: number; name: string; price: number; picture?: string | null }) {
-            const existing = this.items.find(i => i.productId === product.id)
+        addToCart(product: { 
+            id: number; 
+            name: string; 
+            price: number; 
+            picture?: string | null; 
+            optionId?: number | null;
+            size?: string | null;
+        }) {
+            // Chercher un produit identique avec la même option/taille
+            const existing = this.items.find(
+                i => i.productId === product.id && i.optionId === product.optionId
+            )
+
             if (existing) {
                 existing.quantity++
             } else {
@@ -23,18 +36,24 @@ export const useCartStore = defineStore('cart', {
                     name: product.name,
                     price: product.price,
                     picture: product.picture ?? null,
-                    quantity: 1
+                    quantity: 1,
+                    optionId: product.optionId ?? null,
+                    size: product.size ?? null
                 })
             }
         },
-        removeItem(productId: number) {
-            this.items = this.items.filter(i => i.productId !== productId)
+        removeItem(productId: number, optionId?: number | null) {
+            this.items = this.items.filter(
+                i => !(i.productId === productId && i.optionId === optionId)
+            )
         },
-        updateQuantity(productId: number, quantity: number) {
-            const item = this.items.find(i => i.productId === productId)
+        updateQuantity(productId: number, optionId: number | null, quantity: number) {
+            const item = this.items.find(
+                i => i.productId === productId && i.optionId === optionId
+            )
             if (item) {
                 if (quantity <= 0) {
-                    this.removeItem(productId)
+                    this.removeItem(productId, optionId)
                 } else {
                     item.quantity = quantity
                 }

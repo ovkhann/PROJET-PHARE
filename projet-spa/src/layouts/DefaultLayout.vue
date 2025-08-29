@@ -17,9 +17,8 @@ const User = useUserStore();
 
 async function logoutUser() {
   await AuthService.logout();
-  router.push('/login'); // redirection après déconnexion
+  router.push('/login');
 }
-
 </script>
 
 <template>
@@ -74,17 +73,33 @@ async function logoutUser() {
 
       <!-- Liste des produits -->
       <div v-else class="cart-items">
-        <div v-for="item in cartStore.items" :key="item.productId" class="cart-item">
+        <div 
+          v-for="item in cartStore.items" 
+          :key="`${item.productId}-${item.optionId ?? 'noopt'}`" 
+          class="cart-item"
+        >
           <div class="container-image-produit-panier">
             <img :src="item.picture ?? '/images/products/fallback.jpg'" :alt="item.name" />
           </div>
           <div class="cart-item-info">
             <p>{{ item.name }}</p>
+            <!-- Affichage de la taille -->
+            <p v-if="item.size">Taille : {{ item.size }}</p>
+
             <p>
               {{ item.price.toFixed(2) }}€ x
-              <input type="number" min="1" v-model.number="item.quantity"
-                @change="cartStore.updateQuantity(item.productId, item.quantity)" />
-              <button class="btn-supprimer" @click="cartStore.removeItem(item.productId)">Supprimer</button>
+              <input 
+                type="number" 
+                min="1" 
+                v-model.number="item.quantity"
+                @change="cartStore.updateQuantity(item.productId, item.optionId ?? null, item.quantity)" 
+              />
+              <button 
+                class="btn-supprimer" 
+                @click="cartStore.removeItem(item.productId, item.optionId ?? null)"
+              >
+                Supprimer
+              </button>
             </p>
           </div>
         </div>
@@ -99,10 +114,7 @@ async function logoutUser() {
           <button class="btn-clear-cart" @click="cartStore.clearCart()">Vider le panier</button>
         </div>
       </div>
-
-
     </div>
-
 
     <!-- FOOTER -->
     <footer>
@@ -137,6 +149,7 @@ async function logoutUser() {
     </footer>
   </div>
 </template>
+
 
 <style scoped>
 footer {
@@ -354,6 +367,7 @@ header {
   justify-content: center;
   align-items: center;
   display: flex;
+  box-shadow: 0px 0px 8px black;
 }
 
 .deconnexion-button {
