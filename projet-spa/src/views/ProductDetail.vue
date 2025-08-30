@@ -48,11 +48,10 @@ onMounted(async () => {
     selectedImage.value = product.value.picture[0] ?? null
     selectedOptionId.value = null
 
-    // Récupérer 4 produits aléatoires (hors produit actuel)
+    // Récupérer 4 produits similaires (hors produit actuel)
     const relatedRes = await Caller.get(`/api/products`)
-    const others = relatedRes.data.filter((p: any) => p.id !== product.value?.id)
-    relatedProducts.value = others
-      .sort(() => 0.5 - Math.random()) // mélange
+    relatedProducts.value = relatedRes.data
+      .filter((p: any) => p.id !== product.value?.id)
       .slice(0, 4)
 
   } catch (error) {
@@ -136,22 +135,8 @@ function handleImageError(event: Event) {
     Chargement du produit...
   </section>
 
-  <!-- Bloc "Vous pourriez aimer aussi" -->
-  <section v-if="relatedProducts.length" class="related-products">
-    <h2>Vous pourriez aimer aussi</h2>
-    <div class="related-container">
-      <router-link v-for="item in relatedProducts" :key="item.id" 
-                   :to="{ name: 'product-detail', params: { id: item.id } }"
-                   class="related-card">
-        <img :src="item.picture[0] ?? '/images/products/fallback.jpg'" :alt="item.name" 
-             @error="handleImageError" />
-        <p class="name">{{ item.name }}</p>
-        <p class="price">{{ item.price.toFixed(2) }}€</p>
-      </router-link>
-    </div>
-  </section>
+  
 </template>
-
 
 
 <style scoped>
