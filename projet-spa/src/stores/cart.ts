@@ -7,7 +7,7 @@ interface CartItem {
     picture?: string | null
     quantity: number
     optionId?: number | null
-    size?: string | null
+    size?: string | null   // 👈 taille ajoutée
 }
 
 export const useCartStore = defineStore('cart', {
@@ -21,7 +21,7 @@ export const useCartStore = defineStore('cart', {
             price: number; 
             picture?: string | null; 
             optionId?: number | null;
-            size?: string | null;
+            size?: string | null;   // 👈 taille récupérée
         }) {
             // Chercher un produit identique avec la même option/taille
             const existing = this.items.find(
@@ -38,7 +38,7 @@ export const useCartStore = defineStore('cart', {
                     picture: product.picture ?? null,
                     quantity: 1,
                     optionId: product.optionId ?? null,
-                    size: product.size ?? null
+                    size: product.size ?? null   // 👈 stocke bien la taille
                 })
             }
         },

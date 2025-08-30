@@ -61,16 +61,21 @@ function addProductToCart(product: Product) {
     return
   }
 
+  // 🔎 Trouver l'option choisie pour récupérer aussi la taille
+  const selectedOption = product.options.find(opt => opt.id === selectedOptionId)
+
   cartStore.addToCart({
     id: product.id,
     name: product.name,
     price: product.price,
     picture: product.picture[0] ?? null,
-    optionId: selectedOptionId
+    optionId: selectedOption?.id ?? null,
+    size: selectedOption?.size ?? null   // 👈 on passe la taille
   })
 
-  alert(`${product.name} ajouté au panier avec la taille choisie !`)
+  alert(`${product.name} ajouté au panier avec la taille ${selectedOption?.size} !`)
 }
+
 
 function handleImageError(event: Event) {
   const target = event.target as HTMLImageElement
@@ -95,19 +100,15 @@ function handleImageError(event: Event) {
           <!-- Produit cliquable -->
           <router-link :to="{ name: 'product-detail', params: { id: product.id } }" class="product-link">
             <div class="container-product-image">
-              <img :src="product.picture[0] ?? '/images/products/fallback.jpg'"
-                   :alt="product.name"
-                   class="product-image"
-                   @error="handleImageError" />
+              <img :src="product.picture[0] ?? '/images/products/fallback.jpg'" :alt="product.name"
+                class="product-image" @error="handleImageError" />
             </div>
             <p class="product-name">{{ product.name }}</p>
             <p class="product-price">{{ product.price.toFixed(2) }}€</p>
           </router-link>
 
           <!-- Sélecteur de taille -->
-          <select v-if="product.options.length"
-                  v-model="selectedOptions[product.id]"
-                  class="option-select">
+          <select v-if="product.options.length" v-model="selectedOptions[product.id]" class="option-select">
             <option :value="null" disabled>Choisir une taille</option>
             <option v-for="opt in product.options" :key="opt.id" :value="opt.id">
               {{ opt.size }}
@@ -163,8 +164,8 @@ function handleImageError(event: Event) {
 }
 
 .product-link {
-    padding: 0vw;
-    color: var(--color-brown);
+  padding: 0vw;
+  color: var(--color-brown);
 }
 
 .cover-image {
@@ -206,7 +207,8 @@ function handleImageError(event: Event) {
 }
 
 .product-card:hover {
-transform: scale(0.9);}
+  transform: scale(0.9);
+}
 
 .product-image {
   width: 100%;

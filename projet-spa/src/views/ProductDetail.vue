@@ -9,99 +9,150 @@ const route = useRoute()
 const User = useUserStore()
 const cartStore = useCartStore()
 
+interface Option {
+  id: number
+  size: string
+}
+
 interface Product {
-    id: number
-    name: string
-    price: number
-    picture: string[]
-    description: string
-    category: any
-    options: any[]
+  id: number
+  name: string
+  price: number
+  picture: string[]
+  description: string
+  category: any
+  options: Option[]
 }
 
 const product = ref<Product | null>(null)
 const selectedImage = ref<string | null>(null)
+const selectedOptionId = ref<number | null>(null)
+
+// Produits similaires
+const relatedProducts = ref<Product[]>([])
 
 onMounted(async () => {
-    try {
-        const id = route.params.id
-        const res = await Caller.get(`/api/products/${id}`)
-        product.value = {
-            id: Number(res.data.id),
-            name: String(res.data.name),
-            price: Number(res.data.price),
-            picture: Array.isArray(res.data.picture) ? res.data.picture : (res.data.picture ? [res.data.picture] : []),
-            description: String(res.data.description),
-            category: res.data.category,
-            options: res.data.options || []
-        }
-
-        selectedImage.value = product.value.picture[0] ?? null
-    } catch (error) {
-        console.error(error)
+  try {
+    const id = route.params.id
+    const res = await Caller.get(`/api/products/${id}`)
+    product.value = {
+      id: Number(res.data.id),
+      name: String(res.data.name),
+      price: Number(res.data.price),
+      picture: Array.isArray(res.data.picture) ? res.data.picture : (res.data.picture ? [res.data.picture] : []),
+      description: String(res.data.description),
+      category: res.data.category,
+      options: res.data.options ?? []
     }
+
+    selectedImage.value = product.value.picture[0] ?? null
+    selectedOptionId.value = null
+
+    // Récupérer 4 produits aléatoires (hors produit actuel)
+    const relatedRes = await Caller.get(`/api/products`)
+    const others = relatedRes.data.filter((p: any) => p.id !== product.value?.id)
+    relatedProducts.value = others
+      .sort(() => 0.5 - Math.random()) // mélange
+      .slice(0, 4)
+
+  } catch (error) {
+    console.error(error)
+  }
 })
 
 function addProductToCart() {
-    if (!User.isLogged || !product.value) return
-    cartStore.addToCart({
-        id: product.value.id,
-        name: product.value.name,
-        price: product.value.price,
-        picture: product.value.picture[0] ?? null
-    })
-    alert(`${product.value.name} ajouté au panier !`)
+  if (!User.isLogged || !product.value) return
+
+  if (!selectedOptionId.value) {
+    alert("Veuillez choisir une taille avant d’ajouter au panier !")
+    return
+  }
+
+  const selectedOption = product.value.options.find(opt => opt.id === selectedOptionId.value)
+  if (!selectedOption) return
+
+  cartStore.addToCart({
+    id: product.value.id,
+    name: product.value.name,
+    price: product.value.price,
+    picture: product.value.picture[0] ?? null,
+    optionId: selectedOption.id,
+    size: selectedOption.size
+  })
+
+  alert(`${product.value.name} (${selectedOption.size}) ajouté au panier !`)
 }
 
 function selectImage(img: string) {
-    selectedImage.value = img
+  selectedImage.value = img
 }
 
 function handleImageError(event: Event) {
-    const target = event.target as HTMLImageElement
-    target.src = '/images/products/fallback.jpg'
+  const target = event.target as HTMLImageElement
+  target.src = '/images/products/fallback.jpg'
 }
 </script>
 
 <template>
-    <section class="product-detail-page" v-if="product">
-        <div class="product-detail-container">
-            <!-- Galerie images à gauche -->
-            <div class="gallery-left">
-                <div class="main-image">
-                    <img v-if="selectedImage" :src="selectedImage" :alt="product.name" @error="handleImageError" />
-                </div>
-                <div class="thumbnails">
-                    <img v-for="(img, index) in product.picture" :key="index" :src="img" :alt="product.name"
-                        class="thumbnail" @click="selectImage(img)" @error="handleImageError" />
-                </div>
-            </div>
-
-            <!-- Infos produit à droite -->
-            <div class="info-right">
-                <h1 class="style-h1-product">{{ product.name }}</h1>
-                <p class="price">{{ product.price.toFixed(2) }}€</p>
-
-                <div v-if="product.options.length">
-                    <h3>Options :</h3>
-                    <ul>
-                        <li v-for="option in product.options" :key="option.id">{{ option.name }}</li>
-                    </ul>
-                </div>
-
-                <button v-if="User.isLogged" @click="addProductToCart" class="add-to-cart-btn">
-                    Ajouter au panier
-                </button>
-
-                <p class="description">{{ product.description }}</p>
-            </div>
+  <section class="product-detail-page" v-if="product">
+    <div class="product-detail-container">
+      <!-- Galerie images à gauche -->
+      <div class="gallery-left">
+        <div class="main-image">
+          <img v-if="selectedImage" :src="selectedImage" :alt="product.name" @error="handleImageError" />
         </div>
-    </section>
+        <div class="thumbnails">
+          <img v-for="(img, index) in product.picture" :key="index" :src="img" :alt="product.name"
+               class="thumbnail" @click="selectImage(img)" @error="handleImageError" />
+        </div>
+      </div>
 
-    <section v-else>
-        Chargement du produit...
-    </section>
+      <!-- Infos produit à droite -->
+      <div class="info-right">
+        <h1 class="style-h1-product">{{ product.name }}</h1>
+        <p class="price">{{ product.price.toFixed(2) }}€</p>
+
+        <!-- Sélecteur de taille -->
+        <div v-if="product.options.length">
+          <label for="option-select">Taille :</label>
+          <select id="option-select" v-model="selectedOptionId" class="option-select">
+            <option :value="null" disabled>Choisir une taille</option>
+            <option v-for="opt in product.options" :key="opt.id" :value="opt.id">
+              {{ opt.size }}
+            </option>
+          </select>
+        </div>
+
+        <button v-if="User.isLogged" @click="addProductToCart" class="add-to-cart-btn">
+          Ajouter au panier
+        </button>
+
+        <p class="description">{{ product.description }}</p>
+      </div>
+    </div>
+  </section>
+
+  <section v-else>
+    Chargement du produit...
+  </section>
+
+  <!-- Bloc "Vous pourriez aimer aussi" -->
+  <section v-if="relatedProducts.length" class="related-products">
+    <h2>Vous pourriez aimer aussi</h2>
+    <div class="related-container">
+      <router-link v-for="item in relatedProducts" :key="item.id" 
+                   :to="{ name: 'product-detail', params: { id: item.id } }"
+                   class="related-card">
+        <img :src="item.picture[0] ?? '/images/products/fallback.jpg'" :alt="item.name" 
+             @error="handleImageError" />
+        <p class="name">{{ item.name }}</p>
+        <p class="price">{{ item.price.toFixed(2) }}€</p>
+      </router-link>
+    </div>
+  </section>
 </template>
+
+
 
 <style scoped>
 .product-detail-container {
