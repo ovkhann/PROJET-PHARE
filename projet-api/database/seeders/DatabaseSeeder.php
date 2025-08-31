@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
 
         // Création des produits
         $product1 = Product::create([
-            'name' => 'VESTE PAPILLON NAVY BLUE',
+            'name' => 'VESTE PAPILLON - NAVY BLUE',
             'price' => 59.99,
             'stock' => 50,
             'description' => 'LOREM ...',
@@ -58,7 +58,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $product2 = Product::create([
-            'name' => 'JOGGING PAPILLON NAVY BLUE',
+            'name' => 'JOGGING PAPILLON - NAVY BLUE',
             'price' => 59.99,
             'stock' => 50,
             'description' => 'LOREM LOREMLOREMKLOREMLREORLERLEMRER,LE  KNRK ENRJENJ RBNEJRNENRKJEN RNEKR N',

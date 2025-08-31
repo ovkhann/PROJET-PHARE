@@ -583,7 +583,7 @@ nav a:first-of-type {
   padding: 1.5rem 0;
   display: flex;
   gap: 3vw;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-beige);
   align-items: center;
   justify-content: flex-start;
 }

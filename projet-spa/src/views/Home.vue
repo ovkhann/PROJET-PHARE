@@ -196,17 +196,33 @@ function handleImageError(event: Event) {
 .product-card {
   width: 20vw;
   text-align: center;
+  display: flex;
   transition: all 0.3s ease-in-out;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .container-product-image {
   width: 100%;
   height: auto;
   position: relative;
-  display: inline-flex;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
-.product-card:hover {
+.option-select {
+  font-size: 1vw;
+  font-family: 'nexa-light';
+  margin-bottom: 1vw;
+  padding: 5px;
+  border-radius: 5px;
+  border: solid 2px var(--color-beige);
+}
+
+.product-link:hover {
   transform: scale(0.9);
 }
 

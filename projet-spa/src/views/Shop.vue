@@ -73,20 +73,15 @@ function handleImageError(event: Event) {
 
 <template>
   <section class="shop-page">
-    <h1 class="shop-title">Notre boutique</h1>
+    <h1 class="shop-title">THE SHOP</h1>
 
     <!-- Filtres catégories -->
     <div class="filters">
       <div class="category-filters">
-        <button 
-          :class="{ active: selectedCategory === null }" 
-          @click="selectedCategory = null">
+        <button :class="{ active: selectedCategory === null }" @click="selectedCategory = null">
           Tous
         </button>
-        <button 
-          v-for="cat in categories" 
-          :key="cat.id" 
-          :class="{ active: selectedCategory === cat.id }"
+        <button v-for="cat in categories" :key="cat.id" :class="{ active: selectedCategory === cat.id }"
           @click="selectedCategory = cat.id">
           {{ cat.name }}
         </button>
@@ -94,15 +89,10 @@ function handleImageError(event: Event) {
 
       <!-- Filtres tailles -->
       <div class="size-filters" v-if="sizes.length">
-        <button 
-          :class="{ active: selectedSize === null }" 
-          @click="selectedSize = null">
+        <button :class="{ active: selectedSize === null }" @click="selectedSize = null">
           Toutes tailles
         </button>
-        <button 
-          v-for="size in sizes" 
-          :key="size" 
-          :class="{ active: selectedSize === size }"
+        <button v-for="size in sizes" :key="size" :class="{ active: selectedSize === size }"
           @click="selectedSize = size">
           {{ size }}
         </button>
@@ -111,17 +101,11 @@ function handleImageError(event: Event) {
 
     <!-- Produits -->
     <div v-if="filteredProducts.length" class="products-grid">
-      <RouterLink 
-        v-for="product in filteredProducts" 
-        :key="product.id" 
-        :to="{ name: 'product-detail', params: { id: product.id } }"
-        class="product-card">
-        
-        <img 
-          :src="product.picture[0] ?? '/images/products/fallback.jpg'" 
-          :alt="product.name" 
-          @error="handleImageError"
-        />
+      <RouterLink v-for="product in filteredProducts" :key="product.id"
+        :to="{ name: 'product-detail', params: { id: product.id } }" class="product-card">
+
+        <img :src="product.picture[0] ?? '/images/products/fallback.jpg'" :alt="product.name"
+          @error="handleImageError" />
         <p class="name">{{ product.name }}</p>
         <p class="price">{{ product.price.toFixed(2) }}€</p>
       </RouterLink>
@@ -138,9 +122,11 @@ function handleImageError(event: Event) {
 }
 
 .shop-title {
+  text-align: center;
+  margin: 1rem 0rem;
   font-size: 2rem;
-  margin-bottom: 1.5rem;
   color: var(--color-brown);
+  font-weight: bold;
 }
 
 .filters {
@@ -150,7 +136,8 @@ function handleImageError(event: Event) {
   margin-bottom: 2rem;
 }
 
-.category-filters, .size-filters {
+.category-filters,
+.size-filters {
   display: flex;
   gap: 1rem;
   justify-content: center;
@@ -181,7 +168,7 @@ function handleImageError(event: Event) {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  justify-content: center; /* centre toute la ligne, même incomplète */
+  justify-content: center;
 }
 
 .product-card {
@@ -190,10 +177,11 @@ function handleImageError(event: Event) {
   flex: 1 1 calc(25% - 2rem);
   max-width: 20vw;
   align-items: center;
+  overflow: hidden;
   text-decoration: none;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-creme);
   border-radius: 10px;
-  padding: 1rem;
+  padding: 0rem;
   transition: transform 0.2s;
 }
 
@@ -205,8 +193,8 @@ function handleImageError(event: Event) {
   width: 100%;
   height: 20vw;
   object-fit: cover;
+  border-bottom: solid 1px var(--color-creme);
   margin-bottom: 1rem;
-  border-radius: 8px;
 }
 
 .product-card .name {

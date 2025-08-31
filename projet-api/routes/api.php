@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -30,7 +31,6 @@ Route::get('/cities', fn() => \App\Models\City::all());
 Route::get('/products', [ProductController::class, 'index']); // liste tous les produits
 Route::get('/products/{product}', [ProductController::class, 'show']); // détail d'un produit
 
-
 // Catégories
 Route::get('/categories', [CategoryController::class, 'index']); // liste des catégories
 Route::get('/categories/{category}', [CategoryController::class, 'show']); // détails d'une catégorie et ses produits
@@ -38,6 +38,9 @@ Route::get('/categories/{category}', [CategoryController::class, 'show']); // d�
 // Options
 Route::get('/options', [OptionController::class, 'index']); // liste des options
 Route::get('/options/{option}', [OptionController::class, 'show']); // détail d'une option
+
+Route::post('/messages', [MessageController::class, 'store']);
+Route::get('/messages', [MessageController::class, 'index'])->middleware('auth:sanctum'); 
 
 // ------------------
 // Utilisateurs connectés
