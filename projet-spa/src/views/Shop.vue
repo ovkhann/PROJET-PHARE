@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { RouterLink } from 'vue-router'
-import Caller from '@/_services/CallerService'
+import Axios from '@/_services/CallerService'
 
 interface Option {
   id: number
@@ -32,7 +32,7 @@ const selectedSize = ref<string | null>(null)
 // Récupérer tous les produits + catégories + tailles
 onMounted(async () => {
   try {
-    const res = await Caller.get('/api/products')
+    const res = await Axios.get('/api/products')
     products.value = res.data.map((p: any) => ({
       id: Number(p.id),
       name: String(p.name),

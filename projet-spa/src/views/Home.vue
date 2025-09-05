@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import Caller from '@/_services/CallerService'
 import { useUserStore } from '@/stores/User'
 import { useCartStore } from '@/stores/cart'
+import Axios from '@/_services/CallerService'
 
 const User = useUserStore()
 const cartStore = useCartStore()
@@ -29,7 +29,7 @@ const selectedOptions = ref<Record<number, number | null>>({})
 // Charger les 4 derniers produits
 onMounted(async () => {
   try {
-    const res = await Caller.get('/api/products')
+    const res = await Axios.get('/api/products')
 
     const fetchedProducts: Product[] = res.data.map((p: any) => ({
       id: Number(p.id),
@@ -299,5 +299,72 @@ function handleImageError(event: Event) {
 
 h2 {
   color: var(--color-beige);
+}
+
+@media screen and (max-width: 767px) {
+  .products-container {
+    display: flex;
+    gap: 15vw;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .product-card {
+    width: auto;
+    text-align: center;
+    display: flex;
+    transition: all 0.3s ease-in-out;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .product-image {
+    width: 60vw;
+    height: 65vw;
+    border: 3px solid var(--color-beige);
+    object-fit: cover;
+    border-radius: 2vw;
+    position: relative;
+}
+
+.product-name {
+    margin: 0.5rem 0vw;
+    font-size: 4vw;
+    font-weight: bold;
+    color: var(--color-brown);
+}
+
+.product-price {
+    margin: 0.5rem 0vw;
+    font-weight: bold;
+    font-size: 4vw;
+    color: var(--color-brown);
+}
+
+.option-select {
+    font-size: 4vw;
+    font-family: 'nexa-light';
+    margin-bottom: 1vw;
+    padding: 5px;
+    border-radius: 5px;
+    border: solid 2px var(--color-beige);
+}
+
+.add-to-cart-btn {
+    padding: 0.5rem 2rem;
+    background-color: var(--color-beige);
+    color: var(--color-brown);
+    border: none;
+    font-weight: bold;
+    font-size: 4vw;
+    width: fit-content;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+
 }
 </style>

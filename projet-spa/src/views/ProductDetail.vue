@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import Caller from '@/_services/CallerService'
 import { useCartStore } from '@/stores/cart'
 import { useUserStore } from '@/stores/User'
+import Axios from '@/_services/CallerService'
 
 const route = useRoute()
 const User = useUserStore()
@@ -34,7 +34,7 @@ const relatedProducts = ref<Product[]>([])
 onMounted(async () => {
   try {
     const id = route.params.id
-    const res = await Caller.get(`/api/products/${id}`)
+    const res = await Axios.get(`/api/products/${id}`)
     product.value = {
       id: Number(res.data.id),
       name: String(res.data.name),
@@ -49,7 +49,7 @@ onMounted(async () => {
     selectedOptionId.value = null
 
     // Récupérer 4 produits similaires (hors produit actuel)
-    const relatedRes = await Caller.get(`/api/products`)
+    const relatedRes = await Axios.get(`/api/products`)
     relatedProducts.value = relatedRes.data
       .filter((p: any) => p.id !== product.value?.id)
       .slice(0, 4)
