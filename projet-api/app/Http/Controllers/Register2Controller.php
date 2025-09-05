@@ -23,7 +23,8 @@ class Register2Controller extends Controller
 
         $user = new User();
         $user->fill($formFields);
-        $user->token=Str::random(40);
+        $user->password = bcrypt($formFields['password']);
+        $user->token = Str::random(40);
         $user->save();
 
         Mail::to($user->email)->send(new RegisterEmail($user));
