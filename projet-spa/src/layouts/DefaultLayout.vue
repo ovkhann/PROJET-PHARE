@@ -73,11 +73,7 @@ async function logoutUser() {
 
       <!-- Liste des produits -->
       <div v-else class="cart-items">
-        <div 
-          v-for="item in cartStore.items" 
-          :key="`${item.productId}-${item.optionId ?? 'noopt'}`" 
-          class="cart-item"
-        >
+        <div v-for="item in cartStore.items" :key="`${item.productId}-${item.optionId ?? 'noopt'}`" class="cart-item">
           <div class="container-image-produit-panier">
             <img :src="item.picture ?? '/images/products/fallback.jpg'" :alt="item.name" />
           </div>
@@ -88,16 +84,9 @@ async function logoutUser() {
 
             <p>
               {{ item.price.toFixed(2) }}€ x
-              <input 
-                type="number" 
-                min="1" 
-                v-model.number="item.quantity"
-                @change="cartStore.updateQuantity(item.productId, item.optionId ?? null, item.quantity)" 
-              />
-              <button 
-                class="btn-supprimer" 
-                @click="cartStore.removeItem(item.productId, item.optionId ?? null)"
-              >
+              <input type="number" min="1" v-model.number="item.quantity"
+                @change="cartStore.updateQuantity(item.productId, item.optionId ?? null, item.quantity)" />
+              <button class="btn-supprimer" @click="cartStore.removeItem(item.productId, item.optionId ?? null)">
                 Supprimer
               </button>
             </p>
@@ -143,7 +132,7 @@ async function logoutUser() {
         </div>
       </div>
       <div class="bottom-container-footer">
-        <span class="politique">Politique de confidentialité | Mentions légales | Politique de remboursement</span>
+        <span class="politique"><a href="/privacy-policy"> PRIVACY POLICY</a> | <a href="/legal-notice">LEGAL NOTICE</a> | <a href="/refund-policy">REFUND POLICY</a></span>
         <span class="revolve-realm">REVOLVE REALM™ | 2025</span>
       </div>
     </footer>
@@ -162,6 +151,15 @@ footer {
   padding: 1vw;
   background: var(--color-beige);
   align-items: center;
+}
+
+.revolve-realm {
+  font-family: nexa-bold;
+}
+
+.politique a {
+  color: var(--color-brown) !important;
+  font-family: 'nexa-bold';
 }
 
 .container-image-produit-panier {

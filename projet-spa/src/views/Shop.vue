@@ -2,6 +2,18 @@
 import { ref, onMounted, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import Axios from '@/_services/CallerService'
+import { useHead } from '@vueuse/head'
+
+useHead({
+  title: 'Shop | Revolve Realm',
+  meta: [
+    { name: 'description', content: "Explore the full Revolve Realm streetwear collection. Discover our latest drops, premium hoodies, t-shirts, and accessories designed for style and comfort. Shop the entire catalog now." },
+    { property: 'og:title', content: 'Shop | Revolve Realm' }
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://revolverealm.shop/shop'  }
+  ]
+})
 
 interface Option {
   id: number

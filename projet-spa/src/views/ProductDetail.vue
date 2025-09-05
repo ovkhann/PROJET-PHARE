@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
 import { useUserStore } from '@/stores/User'
 import Axios from '@/_services/CallerService'
+import { useHead } from '@vueuse/head'
 
 const route = useRoute()
 const User = useUserStore()
@@ -17,6 +18,7 @@ interface Option {
 interface Product {
   id: number
   name: string
+  slug: string
   price: number
   picture: string[]
   description: string
@@ -27,9 +29,19 @@ interface Product {
 const product = ref<Product | null>(null)
 const selectedImage = ref<string | null>(null)
 const selectedOptionId = ref<number | null>(null)
-
-// Produits similaires
 const relatedProducts = ref<Product[]>([])
+
+// Fonction pour transformer le nom du produit en slug SEO-friendly (lettres uniquement, minuscules)
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()                  // tout en minuscules
+    .trim()                         // supprime espaces avant/après
+    .replace(/[0-9]/g, '')          // supprime tous les chiffres
+    .replace(/[^\w\s-]/g, '')       // supprime caractères spéciaux
+    .replace(/\s+/g, '-')           // remplace espaces par tirets
+    .replace(/-+/g, '-')            // remplace tirets consécutifs par un seul
+}
+
 
 onMounted(async () => {
   try {
@@ -38,6 +50,7 @@ onMounted(async () => {
     product.value = {
       id: Number(res.data.id),
       name: String(res.data.name),
+      slug: generateSlug(String(res.data.name)), // Génération du slug
       price: Number(res.data.price),
       picture: Array.isArray(res.data.picture) ? res.data.picture : (res.data.picture ? [res.data.picture] : []),
       description: String(res.data.description),
@@ -48,14 +61,46 @@ onMounted(async () => {
     selectedImage.value = product.value.picture[0] ?? null
     selectedOptionId.value = null
 
-    // Récupérer 4 produits similaires (hors produit actuel)
+    // Produits similaires
     const relatedRes = await Axios.get(`/api/products`)
     relatedProducts.value = relatedRes.data
       .filter((p: any) => p.id !== product.value?.id)
       .slice(0, 4)
-
   } catch (error) {
     console.error(error)
+  }
+})
+
+// Génération dynamique du <head> dès que le produit est chargé
+watch(product, (newProduct) => {
+  if (newProduct) {
+    useHead({
+      title: `${newProduct.name} | Revolve Realm`,
+      meta: [
+        {
+          name: 'description',
+          content: `${newProduct.name} — ${newProduct.description.substring(0, 140)}`
+        },
+        {
+          property: 'og:title',
+          content: `${newProduct.name} | Revolve Realm`
+        },
+        {
+          property: 'og:description',
+          content: `${newProduct.description.substring(0, 140)}`
+        },
+        {
+          property: 'og:image',
+          content: newProduct.picture[0] ?? '/images/products/fallback.jpg'
+        }
+      ],
+      link: [
+        {
+          rel: 'canonical',
+          href: `https://revolverealm.shop/products/${newProduct.slug}`
+        }
+      ]
+    })
   }
 })
 
@@ -134,10 +179,7 @@ function handleImageError(event: Event) {
   <section v-else>
     Chargement du produit...
   </section>
-
-  
 </template>
-
 
 <style scoped>
 .product-detail-container {

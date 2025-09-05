@@ -2,6 +2,18 @@
 import { ref } from 'vue';
 import router from '@/router';
 import * as AuthService from '@/_services/AuthService';
+import { useHead } from '@vueuse/head';
+
+useHead({
+  title: 'Login | Revolve Realm',
+  meta: [
+    { name: 'description', content: "Log in to your Revolve Realm account to access your orders, manage your profile, and enjoy a personalized streetwear shopping experience." },
+    { property: 'og:title', content: 'Login | Revolve Realm' }
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://revolverealm.shop/login'  }
+  ]
+})
 
 const auth = ref({
   email: '',

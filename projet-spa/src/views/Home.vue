@@ -3,9 +3,21 @@ import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/User'
 import { useCartStore } from '@/stores/cart'
 import Axios from '@/_services/CallerService'
+import { useHead } from '@vueuse/head'
 
 const User = useUserStore()
 const cartStore = useCartStore()
+
+useHead({
+  title: 'Home | Revolve Realm',
+  meta: [
+    { name: 'description', content: "Welcome to Revolve Realm — a streetwear brand blending style, comfort, and authenticity. Discover our latest collections and elevate your everyday look." },
+    { property: 'og:title', content: 'Home | Revolve Realm' }
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://revolverealm.shop/'  }
+  ]
+})
 
 // Interfaces
 interface Option {

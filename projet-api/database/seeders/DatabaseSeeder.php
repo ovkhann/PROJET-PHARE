@@ -48,7 +48,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'VESTE PAPILLON - NAVY BLUE',
             'price' => 59.99,
             'stock' => 50,
-            'description' => 'LOREM ...',
+            'description' => 'Elevate your wardrobe with the Butterfly Jacket in navy blue, a perfect blend of style and comfort. Crafted from high-quality, soft fabric, this jacket offers a tailored yet relaxed fit, ensuring ease of movement throughout the day. The elegant butterfly motif adds a subtle, modern flair, making it a standout piece for any casual or semi-casual outfit. Designed with practicality in mind, it features a full front zipper, comfortable cuffs, and side pockets for convenience. Versatile and chic, the Butterfly Jacket is ideal for layering over your everyday outfits or adding a touch of sophistication to your leisurewear.',
             'archived' => 0,
             'category_id' => 2,
             'picture' => [
@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'JOGGING PAPILLON - NAVY BLUE',
             'price' => 59.99,
             'stock' => 50,
-            'description' => 'LOREM LOREMLOREMKLOREMLREORLERLEMRER,LE  KNRK ENRJENJ RBNEJRNENRKJEN RNEKR N',
+            'description' => 'Combining comfort and style, the Butterfly Joggers in navy blue are perfect for lounging at home or staying active. Made from soft, breathable fabric, they offer a relaxed yet tailored fit, ensuring optimal freedom of movement. The elegant design is highlighted by a delicate butterfly motif, adding a unique and modern touch to this wardrobe staple. Featuring an elastic waistband with drawstring and practical side pockets, these joggers blend functionality with style. Versatile and chic, they’re ideal for casual outings, light workouts, or simply relaxing in comfort.',
             'archived' => 0,
             'category_id' => 3,
             'picture' => [
@@ -69,6 +69,7 @@ class DatabaseSeeder extends Seeder
                 '/images/products/veste-papillon.jpg',
             ],
         ]);
+
 
 
 
@@ -84,7 +85,7 @@ class DatabaseSeeder extends Seeder
             'first_name' => 'Admin',
             'last_name' => 'Administrateur',
             'role' => RoleEnum::ROLE_ADMIN->value,
-            'email' => 'admin@revolverealm.com',
+            'email' => 'admin@revolverealm.shop',
             'password' => Hash::make('Test123'),
             'street_name' => 'LRSY',
             'billing_address' => 31,

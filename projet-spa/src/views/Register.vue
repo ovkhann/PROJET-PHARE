@@ -2,6 +2,18 @@
 import { ref } from 'vue';
 import router from '@/router';
 import * as AuthService from '@/_services/AuthService';
+import { useHead } from '@vueuse/head';
+
+useHead({
+  title: 'Register | Revolve Realm',
+  meta: [
+    { name: 'description', content: "Create your Revolve Realm account to join our streetwear community, save your favorites, and enjoy a personalized shopping experience." },
+    { property: 'og:title', content: 'Register | Revolve Realm' }
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://revolverealm.shop/register'  }
+  ]
+})
 
 const form = ref({
     first_name: '',

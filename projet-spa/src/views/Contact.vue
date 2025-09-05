@@ -14,6 +14,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Axios from '@/_services/CallerService'
+import { useHead } from '@vueuse/head'
+
+useHead({
+  title: 'Contact | Revolve Realm',
+  meta: [
+    { name: 'description', content: "Get in touch with Revolve Realm. For questions, collaborations, or support, reach out to our team — we’re here to help you." },
+    { property: 'og:title', content: 'Contact | Revolve Realm' }
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://revolverealm.shop/contact'  }
+  ]
+})
 
 // Formulaire
 const form = ref({

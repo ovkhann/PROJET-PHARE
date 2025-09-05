@@ -3,7 +3,7 @@ import 'bootstrap';
 
 import './assets/main.css'
 
-
+import { createHead } from '@vueuse/head'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
@@ -13,9 +13,11 @@ import { useUserStore } from '@/stores/User'
 
 const pinia = createPinia()
 const app = createApp(App)
+const head = createHead()
 
 app.use(router)
 app.use(pinia)
+app.use(head)
 
 app.mount('#app')
 
