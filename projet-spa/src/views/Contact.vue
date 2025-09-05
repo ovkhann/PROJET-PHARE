@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import axios from 'axios'
+import Axios from '@/_services/CallerService'
 
 // Formulaire
 const form = ref({
@@ -33,7 +33,7 @@ const sendMessage = async () => {
 
   try {
     // POST vers Laravel API publique
-    const res = await axios.post('http://localhost:8000/api/messages', form.value, {
+    const res = await Axios.post('http://localhost:8000/api/messages', form.value, {
       headers: { 'Content-Type': 'application/json' }
     })
 
