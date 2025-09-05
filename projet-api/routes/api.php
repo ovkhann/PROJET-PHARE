@@ -39,13 +39,13 @@ Route::get('/categories/{category}', [CategoryController::class, 'show']); // d�
 Route::get('/options', [OptionController::class, 'index']); // liste des options
 Route::get('/options/{option}', [OptionController::class, 'show']); // détail d'une option
 
+// Messages
 Route::post('/messages', [MessageController::class, 'store']);
-Route::get('/messages', [MessageController::class, 'index'])->middleware('auth:sanctum'); 
 
 // ------------------
 // Utilisateurs connectés
 // ------------------
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
 
     Route::get('/user', fn(Request $request) => $request->user());
     Route::put('/users/address', [UserController::class, 'updateAddress']);
@@ -90,5 +90,9 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/users/{user}', [UserController::class, 'show']);
     Route::put('/users/{user}', [UserController::class, 'update']);
     Route::delete('/users/{user}', [UserController::class, 'destroy']);
+
+    // Afficher les messages reçus
+    Route::get('/messages', [MessageController::class, 'index']); 
+
 });
 

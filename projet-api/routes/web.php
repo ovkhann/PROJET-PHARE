@@ -7,5 +7,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('authenticate');
+Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('authenticate')->middleware(['throttle:authenticate']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
