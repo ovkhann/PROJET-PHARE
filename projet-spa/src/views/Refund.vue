@@ -18,7 +18,7 @@ useHead({
     }
   ],
   link: [
-    { rel: 'canonical', href: 'https://revolverealm.shop/refund-policy' }
+    { rel: 'canonical', href: 'https://revolverealm.com/refund-policy' }
   ]
 })
 </script>
@@ -34,7 +34,7 @@ useHead({
 
     <h2>How to Request a Refund</h2>
     <ol>
-      <li>Contact our support team at <a href="mailto:admin@revolverealm.shop">admin@revolverealm.shop</a> with your order details.</li>
+      <li>Contact our support team at <a href="mailto:admin@revolverealm.com">admin@revolverealm.com</a> with your order details.</li>
       <li>Include the reason for the return and whether you would like a replacement or a refund.</li>
       <li>Follow the instructions provided by our support team to ship the product back.</li>
     </ol>
@@ -46,7 +46,7 @@ useHead({
     <p>Products that have been used, damaged, or altered after delivery are not eligible for a refund.</p>
 
     <h2>Contact</h2>
-    <p>If you have any questions about our refund policy, please contact us at <a href="mailto:admin@revolverealm.shop">admin@revolverealm.shop</a>.</p>
+    <p>If you have any questions about our refund policy, please contact us at <a href="mailto:admin@revolverealm.com">admin@revolverealm.com</a>.</p>
   </section>
 </template>
 

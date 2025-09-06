@@ -18,7 +18,7 @@ useHead({
     }
   ],
   link: [
-    { rel: 'canonical', href: 'https://revolverealm.shop/legal-notice' }
+    { rel: 'canonical', href: 'https://revolverealm.com/legal-notice' }
   ]
 })
 </script>
@@ -30,7 +30,7 @@ useHead({
     <h2>Company Information</h2>
     <p>Revolve Realm</p>
     <p>Address: La Roche sur Yon, France</p>
-    <p>Email: <a href="mailto:admin@revolverealm.shop">admin@revolverealm.shop</a></p>
+    <p>Email: <a href="mailto:admin@revolverealm.com">admin@revolverealm.com</a></p>
     <p>Phone: 06 11 83 09 15</p>
     <p>Registration Number: 123 456 789</p>
     <p>VAT Number: FR12 345678901</p>
@@ -50,7 +50,7 @@ useHead({
     <p>These legal notices are governed by the laws of the country in which Revolve Realm is registered.</p>
 
     <h2>Contact</h2>
-    <p>If you have any questions regarding these legal notices, please contact us at <a href="mailto:admin@revolverealm.shop">admin@revolverealm.shop</a>.</p>
+    <p>If you have any questions regarding these legal notices, please contact us at <a href="mailto:admin@revolverealm.com">admin@revolverealm.com</a>.</p>
   </section>
 </template>
 

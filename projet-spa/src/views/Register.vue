@@ -11,7 +11,7 @@ useHead({
     { property: 'og:title', content: 'Register | Revolve Realm' }
   ],
   link: [
-    { rel: 'canonical', href: 'https://revolverealm.shop/register'  }
+    { rel: 'canonical', href: 'https://revolverealm.com/register'  }
   ]
 })
 

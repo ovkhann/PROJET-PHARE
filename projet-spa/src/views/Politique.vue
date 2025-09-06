@@ -18,7 +18,7 @@ useHead({
     }
   ],
   link: [
-    { rel: 'canonical', href: 'https://revolverealm.shop/privacy-policy' }
+    { rel: 'canonical', href: 'https://revolverealm.com/privacy-policy' }
   ]
 })
 </script>
@@ -55,7 +55,7 @@ useHead({
     <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with the date of the latest revision.</p>
 
     <h2>Contact Us</h2>
-    <p>If you have questions or concerns about your privacy, please contact us at <a href="mailto:admin@revolverealm.shop">admin@revolverealm.shop</a>.</p>
+    <p>If you have questions or concerns about your privacy, please contact us at <a href="mailto:admin@revolverealm.com">admin@revolverealm.com</a>.</p>
   </section>
 </template>
 

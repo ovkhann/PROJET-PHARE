@@ -85,7 +85,7 @@ class DatabaseSeeder extends Seeder
             'first_name' => 'Admin',
             'last_name' => 'Administrateur',
             'role' => RoleEnum::ROLE_ADMIN->value,
-            'email' => 'admin@revolverealm.shop',
+            'email' => 'admin@revolverealm.com',
             'password' => Hash::make('Test123'),
             'street_name' => 'LRSY',
             'billing_address' => 31,

@@ -11,7 +11,7 @@ useHead({
     { property: 'og:title', content: 'Shop | Revolve Realm' }
   ],
   link: [
-    { rel: 'canonical', href: 'https://revolverealm.shop/shop'  }
+    { rel: 'canonical', href: 'https://revolverealm.com/shop'  }
   ]
 })
 
