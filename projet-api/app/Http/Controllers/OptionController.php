@@ -81,7 +81,7 @@ class OptionController extends Controller
         $option = Option::find($id);
 
         $option->update([
-            'size' => $request->name,
+            'size' => $request->size,
         ]);
 
         return response()->json([

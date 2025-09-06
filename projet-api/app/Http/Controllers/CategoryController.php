@@ -3,14 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\Product;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $categories = Category::with('products')->get();
@@ -22,16 +18,15 @@ class CategoryController extends Controller
         ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
-        $category = Category::create($request->all());
+        $category = Category::create([
+            'name' => $request->name,
+        ]);
 
         return response()->json([
             'success' => true,
@@ -40,13 +35,9 @@ class CategoryController extends Controller
         ], 201);
     }
 
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id)
     {
-        $category = Category::with('products')->find($id);
+        $category = Category::with('products')->findOrFail($id);
 
         return response()->json([
             'success' => true,
@@ -55,17 +46,13 @@ class CategoryController extends Controller
         ], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
-        $category = Category::find($id);
-
+        $category = Category::findOrFail($id);
         $category->update([
             'name' => $request->name,
         ]);
@@ -77,13 +64,9 @@ class CategoryController extends Controller
         ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
-        $category = Category::find($id);
-
+        $category = Category::findOrFail($id);
         $category->delete();
 
         return response()->json([
@@ -91,11 +74,4 @@ class CategoryController extends Controller
             'message' => 'Catégorie supprimée avec succès'
         ], 200);
     }
-
-
-    // public function search(Request $request)
-    // {
-    //     $query = $request->input('q');
-    //     return response()->json(['query' => $query]);
-    // }
 }
