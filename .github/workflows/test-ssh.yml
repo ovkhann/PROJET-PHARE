@@ -1,13 +1,16 @@
 name: Test SSH
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   test-ssh:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: webfactory/ssh-agent@v0.7.1
+      - uses: webfactory/ssh-agent@v0.8
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - run: ssh -o StrictHostKeyChecking=no ovkhann@projet.revolverealm.com "ls -la"
